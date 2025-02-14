@@ -1,1 +1,1 @@
-from data.load import load
+from .load import load
