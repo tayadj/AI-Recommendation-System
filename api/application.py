@@ -18,7 +18,7 @@ help(RecSys)
 # Train Example Script
 #
 
-df_s, df_o, df_a = RecSys.data.load(sys.path[0] + '\\..\\src\\data\\raw')
+df_s, df_o, df_a = RecSys.data.load(sys.path[0] + '\\..\\src\\data\\storage')
 
 dvp = RecSys.core.pipeline.DataValidationPipeline(exclude = ['id', 'subject_id', 'object_id', 'birth', 'rate', 'timestamp'], time = ['birth', 'timestamp'])
 df_clean_s = dvp.process(df_s)
@@ -34,7 +34,7 @@ encoder_gender, encoder_location, encoder_category = mep.encoder_gender, mep.enc
 model = RecSys.core.engine.Engine()
 mtp = RecSys.core.pipeline.ModelTrainingPipeline(model, dl)
 mtp.train()
-mtp.save_model('./model_test')
+mtp.save_model('model_test')
 
 #
 # Inference Example Script
@@ -47,7 +47,7 @@ mtp.save_model('./model_test')
 import pandas
 import torch
 
-mtp.load_model('./model')
+mtp.load_model(sys.path[0]+'\\..\\src\\model\\storage\\model_100')
 model = mtp.model
 model.eval() 
 
