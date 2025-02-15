@@ -50,14 +50,13 @@ class ModelEmbeddingPipeline:
 
 	def encode(self):
 
-		encoder_gender = sklearn.preprocessing.LabelEncoder()
-		self.data_subject['gender'] = encoder_gender.fit_transform(self.data_subject['gender'])
+		self.encoder_gender = sklearn.preprocessing.LabelEncoder()
+		self.encoder_location = sklearn.preprocessing.LabelEncoder()
+		self.encoder_category = sklearn.preprocessing.LabelEncoder()
 
-		encoder_location = sklearn.preprocessing.LabelEncoder()
-		self.data_subject['location'] = encoder_gender.fit_transform(self.data_subject['location'])
-
-		encoder_category = sklearn.preprocessing.LabelEncoder()
-		self.data_object['category'] = encoder_gender.fit_transform(self.data_object['category'])
+		self.data_subject['gender'] = self.encoder_gender.fit_transform(self.data_subject['gender'])
+		self.data_subject['location'] = self.encoder_location.fit_transform(self.data_subject['location'])
+		self.data_object['category'] = self.encoder_category.fit_transform(self.data_object['category'])
 
 	def merge(self):
 

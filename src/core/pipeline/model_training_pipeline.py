@@ -52,5 +52,5 @@ class ModelTrainingPipeline:
 
 	def load_model(self, path):
 
-		self.model.load_state_dict(torch.load(path), weights_only = False)
+		self.model.load_state_dict(torch.load(path, weights_only = False))
 		self.model.to(self.device)
