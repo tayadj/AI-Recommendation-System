@@ -6,6 +6,31 @@ import torch
 
 class ModelEmbeddingPipeline:
 
+	class Dataset(torch.utils.data.Dataset):
+
+		def __init__(self, data):
+
+			self.data = data
+
+		def __len__(self):
+
+			return len(self.data)
+
+		def __getitem__(self, index):
+
+			record = self.data.iloc[index]
+
+			return {
+				'subject_id': record['subject_id'],
+				'subject_gender': record['subject_gender'],
+				'subject_age': record['subject_age'],
+				'subject_location': record['subject_location'],
+				'object_id': record['object_id'],
+				'object_category': record['object_category'],
+				'rate': record['rate'],
+			}
+        
+
 	def __init__(self, data_subject, data_object, data_action):
 
 		self.data_subject = data_subject
@@ -24,13 +49,15 @@ class ModelEmbeddingPipeline:
 
 		self.data = pandas.merge(self.data_action, self.data_subject, left_on = 'subject_id', right_on = 'subject_id', suffixes = ('_action', '_subject'))
 		self.data = pandas.merge(self.data, self.data_object, left_on = 'object_id', right_on = 'object_id', suffixes = ('_subject', '_object'))
-		#self.data.drop(columns = ['id_subject', 'id_object'], inplace = True)
 
 	def process(self):
 
 		self.featuring()
 		self.merge()
 
-		return self.data
+		self.dataset = self.Dataset(self.data)
+		self.dataloader = torch.utils.data.DataLoader(self.dataset, batch_size = 1, shuffle = True)
+
+		return self.dataloader
 
 		

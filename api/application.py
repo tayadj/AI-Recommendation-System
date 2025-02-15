@@ -26,7 +26,7 @@ df_clean_o = dvp.process(df_o)
 df_clean_a = dvp.process(df_a)
 
 mep = RecSys.core.pipeline.ModelEmbeddingPipeline(df_clean_s,df_clean_o,df_clean_a)
-emb = mep.process()
+dl = mep.process()
 
 
 #
