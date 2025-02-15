@@ -1,3 +1,4 @@
+import sklearn
 import pandas
 import numpy
 import torch
@@ -42,6 +43,17 @@ class ModelEmbeddingPipeline:
 		current_date = pandas.to_datetime('today')
 		self.data_subject['age'] = self.data_subject['birth'].apply(lambda value: current_date.year - value.year - ((current_date.month, current_date.day) < (value.month, value.day)))
 
+	def encode(self):
+
+		encoder_gender = sklearn.preprocessing.LabelEncoder()
+		self.data_subject['gender'] = encoder_gender.fit_transform(self.data_subject['gender'])
+
+		encoder_location = sklearn.preprocessing.LabelEncoder()
+		self.data_subject['location'] = encoder_gender.fit_transform(self.data_subject['location'])
+
+		encoder_category = sklearn.preprocessing.LabelEncoder()
+		self.data_object['category'] = encoder_gender.fit_transform(self.data_object['category'])
+
 	def merge(self):
 
 		self.data_subject = self.data_subject.add_prefix('subject_')
@@ -53,10 +65,11 @@ class ModelEmbeddingPipeline:
 	def process(self):
 
 		self.featuring()
-		self.merge()
+		self.encode()
+		self.merge()		
 
 		self.dataset = self.Dataset(self.data)
-		self.dataloader = torch.utils.data.DataLoader(self.dataset, batch_size = 1, shuffle = True)
+		self.dataloader = torch.utils.data.DataLoader(self.dataset, batch_size = 2, shuffle = True)
 
 		return self.dataloader
 
