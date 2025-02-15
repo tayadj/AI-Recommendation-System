@@ -1,2 +1,5 @@
+from .data_ingestion_pipeline import DataIngestionPipeline
 from .data_validation_pipeline import DataValidationPipeline
+from .model_embedding_pipeline import ModelEmbeddingPipeline
 from .model_training_pipeline import ModelTrainingPipeline
+from .model_inference_pipeline import ModelInferencePipeline
