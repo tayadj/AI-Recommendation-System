@@ -53,10 +53,10 @@ model.eval()
 
 # imitation of data from extrenal API
 data = pandas.DataFrame({
-    'subject_id': [2],
-    'subject_gender': ['f'],
-    'subject_birth': ['1999-01-01'],
-    'subject_location': ['Paris'],
+    'subject_id': [1],
+    'subject_gender': ['m'],
+    'subject_birth': ['2014-09-11'],
+    'subject_location': ['Berlin'],
     'object_id': [1],
     'object_category': ['sport'],
     'timestamp': ['2026-02-17']
@@ -84,4 +84,3 @@ with torch.no_grad():
 
     prediction = model.predict(input)
     print(f'Prediction: {prediction.item()}')
-
