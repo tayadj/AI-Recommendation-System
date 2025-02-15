@@ -1,11 +1,14 @@
-import re
+import pandas
 import string
+import re
+
+
 
 class DataValidationPipeline:
 
-    def __init__(self):
+    def __init__(self, exclude = None):
 
-        pass
+        self.exlude = exclude if exclude else []
 
     def clean(self, text):
 
@@ -24,12 +27,14 @@ class DataValidationPipeline:
 
         return text
 
-
     def process(self, data):
 
-        data = data.map(str)
-        data = data.map(self.clean)
-        data = data.map(self.impute)
+        for attribute in data.columns:
+
+            if attribute not in self.exlude:
+
+                data[attribute] = data[attribute].map(str)
+                data[attribute] = data[attribute].map(self.clean)
+                data[attribute] = data[attribute].map(self.impute)
 
         return data
-        
