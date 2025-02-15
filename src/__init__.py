@@ -1,2 +1,3 @@
 from .data import load
-from .core import Engine, DataValidationPipeline, ModelTrainingPipeline
+from .model import load
+from .core import Engine, DataIngestionPipeline, DataValidationPipeline, ModelEmbeddingPipeline, ModelTrainingPipeline, ModelInferencePipeline
