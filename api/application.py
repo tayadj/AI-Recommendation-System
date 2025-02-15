@@ -39,7 +39,7 @@ mtp.save_model('model_test')
 #
 # Inference Example Script
 #
-
+#
 #
 # Note: move to model inference pipeline
 #
