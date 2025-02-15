@@ -62,15 +62,26 @@ class ModelEmbeddingPipeline:
 		self.data = pandas.merge(self.data_action, self.data_subject, left_on = 'subject_id', right_on = 'subject_id', suffixes = ('_action', '_subject'))
 		self.data = pandas.merge(self.data, self.data_object, left_on = 'object_id', right_on = 'object_id', suffixes = ('_subject', '_object'))
 
+	def describe(self):
+
+		self.config = {}
+
+		self.config['dimension_subject'] = self.data['subject_id'].nunique()
+		self.config['dimension_object'] = self.data['object_id'].nunique()
+		self.config['dimension_gender'] = self.data['subject_gender'].nunique()
+		self.config['dimension_location'] = self.data['subject_location'].nunique()
+		self.config['dimension_category'] = self.data['object_category'].nunique()
+
 	def process(self):
 
 		self.featuring()
 		self.encode()
-		self.merge()		
+		self.merge()
+		self.describe()
 
 		self.dataset = self.Dataset(self.data)
 		self.dataloader = torch.utils.data.DataLoader(self.dataset, batch_size = 2, shuffle = True)
 
-		return self.dataloader
+		return self.config, self.dataloader
 
 		
