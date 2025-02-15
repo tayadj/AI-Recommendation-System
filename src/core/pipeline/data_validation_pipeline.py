@@ -6,9 +6,10 @@ import re
 
 class DataValidationPipeline:
 
-    def __init__(self, exclude = None):
+    def __init__(self, exclude = None, time = None):
 
         self.exlude = exclude if exclude else []
+        self.time = time if time else []
 
     def clean(self, text):
 
@@ -36,5 +37,9 @@ class DataValidationPipeline:
                 data[attribute] = data[attribute].map(str)
                 data[attribute] = data[attribute].map(self.clean)
                 data[attribute] = data[attribute].map(self.impute)
+
+            if attribute in self.time:
+
+                data[attribute] = pandas.to_datetime(data[attribute], format='%Y-%m-%d')
 
         return data
