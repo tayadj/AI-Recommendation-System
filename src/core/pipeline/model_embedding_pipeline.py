@@ -32,11 +32,13 @@ class ModelEmbeddingPipeline:
 			}
         
 
-	def __init__(self, data_subject, data_object, data_action):
+	def __init__(self, data_subject, data_object, data_action, config = {}):
 
 		self.data_subject = data_subject
 		self.data_object = data_object
 		self.data_action = data_action
+
+		self.batch_size = config.get('batch_size', 1)
 
 	def featuring(self):
 
@@ -80,7 +82,7 @@ class ModelEmbeddingPipeline:
 		self.describe()
 
 		self.dataset = self.Dataset(self.data)
-		self.dataloader = torch.utils.data.DataLoader(self.dataset, batch_size = 2, shuffle = True)
+		self.dataloader = torch.utils.data.DataLoader(self.dataset, batch_size = self.batch_size, shuffle = True)
 
 		return self.config, self.dataloader
 
