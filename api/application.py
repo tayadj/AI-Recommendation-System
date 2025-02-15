@@ -20,7 +20,7 @@ help(RecSys)
 
 df_s, df_o, df_a = RecSys.data.load(sys.path[0] + '\\..\\src\\data\\raw')
 
-dvp = RecSys.core.pipeline.DataValidationPipeline(exclude = ['birth', 'rate', 'timestamp'], time = ['birth', 'timestamp'])
+dvp = RecSys.core.pipeline.DataValidationPipeline(exclude = ['id', 'subject_id', 'object_id', 'birth', 'rate', 'timestamp'], time = ['birth', 'timestamp'])
 df_clean_s = dvp.process(df_s)
 df_clean_o = dvp.process(df_o)
 df_clean_a = dvp.process(df_a)
@@ -30,8 +30,13 @@ dc, dl = mep.process()
 dc['batch_size'] = RecSys.core.config.Config['batch_size']
 
 
+model = RecSys.core.engine.Engine()
+mtp = RecSys.core.pipeline.ModelTrainingPipeline(model, dl)
+mtp.train()
 
 
 #
 # Inference Example Script
 #
+
+

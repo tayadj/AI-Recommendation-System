@@ -22,15 +22,18 @@ class ModelEmbeddingPipeline:
 			record = self.data.iloc[index]
 
 			return {
-				'subject_id': record['subject_id'],
-				'subject_gender': record['subject_gender'],
-				'subject_age': record['subject_age'],
-				'subject_location': record['subject_location'],
-				'object_id': record['object_id'],
-				'object_category': record['object_category'],
-				'rate': record['rate'],
+				'subject_id': torch.tensor(record['subject_id'], dtype=torch.long),
+				'subject_gender': torch.tensor(record['subject_gender'], dtype=torch.long),
+				'subject_age': torch.tensor(record['subject_age'], dtype=torch.float),
+				'subject_location': torch.tensor(record['subject_location'], dtype=torch.long),
+				'object_id': torch.tensor(record['object_id'], dtype=torch.long),
+				'object_category': torch.tensor(record['object_category'], dtype=torch.long),
+				'rate': torch.tensor(record['rate'], dtype=torch.float),
 			}
+            
         
+
+
 
 	def __init__(self, data_subject, data_object, data_action, config = {}):
 
