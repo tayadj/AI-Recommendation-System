@@ -1,4 +1,11 @@
+import torch
 
-def save():
+def save(model, environment, config):
 
-	pass
+	data = {
+		'model': model,
+		'environment': environment,
+		'config': config
+	}
+
+	torch.save('./storage/' + config.get('version'))

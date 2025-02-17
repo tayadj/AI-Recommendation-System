@@ -26,7 +26,6 @@ df_clean_s, df_clean_o, df_clean_a = dvp.process()
 mep = RecSys.core.pipeline.ModelEmbeddingPipeline(df_clean_s,df_clean_o,df_clean_a, RecSys.core.config.Config)
 dc, dl = mep.process()
 dc['batch_size'] = RecSys.core.config.Config['batch_size']
-encoder_gender, encoder_location, encoder_category = mep.encoder_gender, mep.encoder_location, mep.encoder_category
 
 engine = RecSys.core.engine.Engine()
 model = engine.produce("base")
