@@ -22,7 +22,7 @@ class DataValidationPipeline:
         text = re.sub(r'<[^>]+>', '', text)
         text = re.sub(r'\[\d+\]|&#91;\d+&#93;', '', text)
         text = re.sub(r'&#\d+;', '', text)
-        text = re.sub(r'\s+', ' ', text).strip()
+        text = re.sub(r'\s+', ' ', text)
         text = text.strip()
         text = text.lower()
 
