@@ -6,7 +6,7 @@ import os
 
 def save(model, environment, config):
 
-	path = os.path.dirname(os.path.abspath(__file__)) + '\\storage\\' + config.get('version')
+	path = os.path.dirname(__file__) + '\\storage\\' + config.get('version')
 
 	data = {
 		'model': model.state_dict(),
