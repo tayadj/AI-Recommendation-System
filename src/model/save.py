@@ -1,4 +1,17 @@
+import torch
+import sys
+import os
 
-def save():
 
-	pass
+
+def save(model, environment, config):
+
+	path = os.path.dirname(__file__) + '\\storage\\' + config.get('version')
+
+	data = {
+		'model': model.state_dict(),
+		'environment': environment,
+		'config': config
+	}
+
+	torch.save(data, path)
