@@ -1,21 +1,18 @@
 import pandas
+import torch
+import sys
+import os
 
-def load(path):
-    
-    """
-    Load data from .tsv files.
-    
-    Parameters: 
-        path - path to the data source directory.
-    
-    Return:
-        data_subject - dataframe with uploaded data about subjects.
-        data_object - dataframe with uploaded data about objects.
-        data_action - dataframe with uploaded data about actions.
-    """
 
-    data_subject = pandas.read_csv(path + '/subject.tsv', sep = '\t')
-    data_object = pandas.read_csv(path + '/object.tsv', sep = '\t')
-    data_action = pandas.read_csv(path + '/action.tsv', sep = '\t')
-    
+
+def load(version):
+
+    path = os.path.dirname(__file__) + '\\storage\\' + version
+
+    data = torch.load(path, weights_only = False)
+
+    data_subject = data['data'][0]
+    data_object = data['data'][1]
+    data_action = data['data'][2]
+
     return data_subject, data_object, data_action
