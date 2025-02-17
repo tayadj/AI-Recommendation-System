@@ -28,8 +28,8 @@ dc, dl = mep.process()
 dc['batch_size'] = RecSys.core.config.Config['batch_size']
 encoder_gender, encoder_location, encoder_category = mep.encoder_gender, mep.encoder_location, mep.encoder_category
 
-
-model = RecSys.core.engine.Engine()
+engine = RecSys.core.engine.Engine()
+model = engine.produce("base")
 mtp = RecSys.core.pipeline.ModelTrainingPipeline(model, dl)
 mtp.train()
 
