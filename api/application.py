@@ -26,11 +26,17 @@ df_clean_s, df_clean_o, df_clean_a = dvp.process()
 mep = RecSys.core.pipeline.ModelEmbeddingPipeline(df_clean_s,df_clean_o,df_clean_a, RecSys.core.config.Config)
 dc, dl = mep.process()
 dc['batch_size'] = RecSys.core.config.Config['batch_size']
+encoder_gender, encoder_category, encoder_location = mep.encoder_gender, mep.encoder_category, mep.encoder_location
 
 engine = RecSys.core.engine.Engine()
 model = engine.produce("base")
 mtp = RecSys.core.pipeline.ModelTrainingPipeline(model, dl)
 mtp.train()
+
+
+RecSys.model.save(mtp.model, {'encoder_gender': encoder_gender, 'encoder_category': encoder_category, 'encoder_location': encoder_location}, {'version': 'base'})
+
+
 
 #
 # Inference Example Script
@@ -39,6 +45,8 @@ mtp.train()
 #
 # Note: move to model inference pipeline
 #
+
+data = RecSys.model.load('base')
 
 '''
 
