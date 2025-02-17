@@ -1,6 +1,6 @@
 import pandas
 
-def load(path = './data/storage'):
+def load(path):
     
     """
     Load data from .tsv files.

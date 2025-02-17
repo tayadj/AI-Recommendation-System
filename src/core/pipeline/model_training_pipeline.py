@@ -46,11 +46,3 @@ class ModelTrainingPipeline:
 			loss_rate = self.train_step()
 			print(f'Epoch {epoch+1}/{self.epochs}, Loss: {loss_rate:.4f}')
 
-	def save_model(self, path):
-
-		torch.save(self.model.state_dict(), path)
-
-	def load_model(self, path):
-
-		self.model.load_state_dict(torch.load(path, weights_only = False))
-		self.model.to(self.device)
