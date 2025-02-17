@@ -6,10 +6,14 @@ import re
 
 class DataValidationPipeline:
 
-    def __init__(self, exclude = None, time = None):
+    def __init__(self, data_subject, data_object, data_action, config = {}):
 
-        self.exlude = exclude if exclude else []
-        self.time = time if time else []
+        self.data_subject = data_subject
+        self.data_object = data_object
+        self.data_action = data_action
+
+        self.exlude = config.get('exclude', [])
+        self.time = config.get('time', [])
 
     def clean(self, text):
 
@@ -28,18 +32,20 @@ class DataValidationPipeline:
 
         return text
 
-    def process(self, data):
+    def process(self):
 
-        for attribute in data.columns:
+        for data in [self.data_subject, self.data_object, self.data_action]:
 
-            if attribute not in self.exlude:
+            for attribute in data.columns:
 
-                data[attribute] = data[attribute].map(str)
-                data[attribute] = data[attribute].map(self.clean)
-                data[attribute] = data[attribute].map(self.impute)
+                if attribute not in self.exlude:
 
-            if attribute in self.time:
+                    data[attribute] = data[attribute].map(str)
+                    data[attribute] = data[attribute].map(self.clean)
+                    data[attribute] = data[attribute].map(self.impute)
 
-                data[attribute] = pandas.to_datetime(data[attribute], format='%Y-%m-%d')
+                if attribute in self.time:
 
-        return data
+                    data[attribute] = pandas.to_datetime(data[attribute], format='%Y-%m-%d')
+
+        return self.data_subject, self.data_object, self.data_action
