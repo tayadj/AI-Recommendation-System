@@ -34,7 +34,6 @@ class ModelEmbeddingPipeline:
         
 
 
-
 	def __init__(self, data_subject, data_object, data_action, config = {}):
 
 		self.data_subject = data_subject

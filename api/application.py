@@ -20,21 +20,18 @@ help(RecSys)
 
 df_s, df_o, df_a = RecSys.data.load(sys.path[0] + '\\..\\src\\data\\storage')
 
-dvp = RecSys.core.pipeline.DataValidationPipeline(exclude = ['id', 'subject_id', 'object_id', 'birth', 'rate', 'timestamp'], time = ['birth', 'timestamp'])
-df_clean_s = dvp.process(df_s)
-df_clean_o = dvp.process(df_o)
-df_clean_a = dvp.process(df_a)
+dvp = RecSys.core.pipeline.DataValidationPipeline(df_s, df_o, df_a, { 'exclude': ['id', 'subject_id', 'object_id', 'birth', 'rate', 'timestamp'], 'time': ['birth', 'timestamp']})
+df_clean_s, df_clean_o, df_clean_a = dvp.process()
 
 mep = RecSys.core.pipeline.ModelEmbeddingPipeline(df_clean_s,df_clean_o,df_clean_a, RecSys.core.config.Config)
 dc, dl = mep.process()
 dc['batch_size'] = RecSys.core.config.Config['batch_size']
 encoder_gender, encoder_location, encoder_category = mep.encoder_gender, mep.encoder_location, mep.encoder_category
 
-
-model = RecSys.core.engine.Engine()
+engine = RecSys.core.engine.Engine()
+model = engine.produce("base")
 mtp = RecSys.core.pipeline.ModelTrainingPipeline(model, dl)
 mtp.train()
-mtp.save_model('model_test')
 
 #
 # Inference Example Script
@@ -43,6 +40,8 @@ mtp.save_model('model_test')
 #
 # Note: move to model inference pipeline
 #
+
+'''
 
 import pandas
 import torch
@@ -84,3 +83,5 @@ with torch.no_grad():
 
     prediction = model.predict(input)
     print(f'Prediction: {prediction.item()}')
+
+'''
