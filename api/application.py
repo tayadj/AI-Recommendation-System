@@ -1,13 +1,56 @@
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from typing import List
+import pandas
 import sys
 
 sys.path.append(sys.path[0]+'\\..')
 
-
-
 import src as RecSys
 
-help(RecSys)
+application = FastAPI(
+    title = "AI Recommendation System"
+)
 
+
+class InferenceRequest(BaseModel):
+
+    version: str
+    subject_id: List[int]
+    subject_gender: List[str]
+    subject_birth: List[str]
+    subject_location: List[str]
+    object_id: List[int]
+    object_category: List[str]
+    timestamp: List[str]
+
+@application.post("/inference")
+def inference(request: InferenceRequest):
+
+    try:
+
+        version = request.version
+        data = request.dict()
+        data.pop('version')
+        data = pandas.DataFrame(data)
+
+        print(version, data)
+
+        model_inference_pipeline = RecSys.core.pipeline.ModelInferencePipeline(version)
+
+        return {"message": "Inference completed successfully"}
+
+    except Exception:
+
+        raise HTTPException(status_code = 500, detail = str(Exception))
+
+if __name__ == "__main__":
+
+    import uvicorn
+    uvicorn.run(application, host = "0.0.0.0", port = 8000)
+
+
+'''
 #
 # Note: Scripts are needed to be moved.
 #
@@ -17,6 +60,8 @@ help(RecSys)
 #
 # Train Example Script
 #
+
+
 
 df_s, df_o, df_a = RecSys.data.load(sys.path[0] + '\\..\\src\\data\\storage')
 
@@ -64,7 +109,7 @@ sample = pandas.DataFrame({
 
 
 print(mip.process(sample))
-
+'''
 
 
 
