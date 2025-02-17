@@ -55,7 +55,7 @@ class ModelInferencePipeline:
 				self.model.load_state_dict(self.data['model'])
 				self.model.eval()
 
-				dvp_config = { 'exclude': ['id', 'subject_id', 'object_id', 'subject_birth', 'timestamp'], 'time': ['subject_birth', 'timestamp']}
+				dvp_config = self.data['config'].get('dvp_config')
 
 				for attribute in sample.columns:
 

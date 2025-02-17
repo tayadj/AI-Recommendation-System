@@ -13,7 +13,7 @@ class Engine():
 			self.dimension_gender = config.get('dimension_gender', 2)
 			self.dimension_location = config.get('dimension_location', 128)
 			self.dimension_category = config.get('dimension_category', 128)
-			self.batch_size = config.get('batch_size', 1)
+			self.batch_size = config.get('batch_size', 4)
 
 			self.embedding_subject = torch.nn.Embedding(self.dimension_subject, 128)
 			self.embedding_object = torch.nn.Embedding(self.dimension_object, 128)

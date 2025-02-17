@@ -40,7 +40,7 @@ class ModelEmbeddingPipeline:
 		self.data_object = data_object
 		self.data_action = data_action
 
-		self.batch_size = config.get('batch_size', 1)
+		self.batch_size = config.get('batch_size', 4)
 
 	def featuring(self):
 
