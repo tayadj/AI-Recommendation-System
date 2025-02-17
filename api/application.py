@@ -1,18 +1,75 @@
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from typing import List
+import pandas
 import sys
 
-sys.path.append(sys.path[0]+'\\..')
-
-
+sys.path.append(sys.path[0]+"\\..")
 
 import src as RecSys
 
-help(RecSys)
 
+
+application = FastAPI(
+    title = "AI Recommendation System"
+)
+
+
+
+class InferenceRequest(BaseModel):
+
+    version: str
+    subject_id: List[int]
+    subject_gender: List[str]
+    subject_birth: List[str]
+    subject_location: List[str]
+    object_id: List[int]
+    object_category: List[str]
+    timestamp: List[str]
+
+@application.post("/inference")
+def inference(request: InferenceRequest):
+
+    try:
+
+        version = request.version
+        data = request.model_dump()
+        data.pop("version")
+        data = pandas.DataFrame(data)
+
+        model_inference_pipeline = RecSys.core.pipeline.ModelInferencePipeline(version)
+        response = model_inference_pipeline.process(data)
+        response = response.tolist()
+
+        return {"inference": response}
+
+    except Exception:
+
+        raise HTTPException(status_code = 500, detail = str(Exception))
+
+
+
+@application.get("/health")
+def health():
+
+    status = {
+        "status": "OK"
+    }
+
+    return status
+
+
+
+if __name__ == "__main__":
+
+    import uvicorn
+    uvicorn.run(application, host = "0.0.0.0", port = 8000)
+
+
+'''
 #
 # Note: Scripts are needed to be moved.
 #
-
-
 
 #
 # Train Example Script
@@ -35,36 +92,7 @@ mtp.train()
 
 
 RecSys.model.save(mtp.model, {'encoder_gender': encoder_gender, 'encoder_category': encoder_category, 'encoder_location': encoder_location}, {'version': 'base'})
-
-
-
-#
-# Inference Example Script
-#
-#
-#
-# Note: move to model inference pipeline
-#
-
-import pandas
-import torch
-
-mip = RecSys.core.pipeline.ModelInferencePipeline('base')
-
-# imitation of data from extrenal API
-sample = pandas.DataFrame({
-    'subject_id': [4, 1],
-    'subject_gender': ['m', 'm'],
-    'subject_birth': ['1988-06-30', '2014-09-11'],
-    'subject_location': ['Tokyo', 'Berlin'],
-    'object_id': [3, 1],
-    'object_category': ['Sport', 'Sport'],
-    'timestamp': ['2026-02-17', '2026-02-17']
-})
-
-
-print(mip.process(sample))
-
+'''
 
 
 
