@@ -46,49 +46,64 @@ RecSys.model.save(mtp.model, {'encoder_gender': encoder_gender, 'encoder_categor
 # Note: move to model inference pipeline
 #
 
-data = RecSys.model.load('base')
-
-'''
-
 import pandas
 import torch
 
-mtp.load_model(sys.path[0]+'\\..\\src\\model\\storage\\model_100')
-model = mtp.model
-model.eval() 
-
 # imitation of data from extrenal API
-data = pandas.DataFrame({
-    'subject_id': [1],
-    'subject_gender': ['m'],
-    'subject_birth': ['2014-09-11'],
-    'subject_location': ['Berlin'],
-    'object_id': [1],
-    'object_category': ['sport'],
-    'timestamp': ['2026-02-17']
+sample = pandas.DataFrame({
+    'subject_id': [4, 1],
+    'subject_gender': ['m', 'm'],
+    'subject_birth': ['1988-06-30', '2014-09-11'],
+    'subject_location': ['Tokyo', 'Berlin'],
+    'object_id': [3, 1],
+    'object_category': ['Sport', 'Sport'],
+    'timestamp': ['2026-02-17', '2026-02-17']
 })
 
-dvp = RecSys.core.pipeline.DataValidationPipeline(exclude = ['subject_id', 'object_id', 'subject_birth', 'timestamp'], time = ['subject_birth', 'timestamp'])
-data_processed = dvp.process(data)
+
+data = RecSys.model.load('base')
+
+engine = RecSys.core.engine.Engine()
+model = engine.produce("base")
+model.load_state_dict(data['model'])
+model.eval()
+
+
+# Config need to be saved on model.save
+dvp_config = { 'exclude': ['id', 'subject_id', 'object_id', 'subject_birth', 'timestamp'], 'time': ['subject_birth', 'timestamp']}
+
+for attribute in sample.columns:
+
+    if attribute not in dvp_config.get('exclude'):
+
+        sample[attribute] = sample[attribute].map(str)
+        sample[attribute] = sample[attribute].map(dvp.clean)
+        sample[attribute] = sample[attribute].map(dvp.impute)
+
+    if attribute in dvp_config.get('time'):
+
+        sample[attribute] = pandas.to_datetime(sample[attribute], format='%Y-%m-%d')
+
+encoder_gender = data['environment'].get('encoder_gender')
+encoder_location = data['environment'].get('encoder_location')
+encoder_category = data['environment'].get('encoder_category')
 
 current_date = pandas.to_datetime('today')
-data_processed['subject_age'] = data_processed['subject_birth'].apply(lambda value: current_date.year - value.year - ((current_date.month, current_date.day) < (value.month, value.day)))
-data_processed['subject_gender'] = encoder_gender.transform(data_processed['subject_gender'])
-data_processed['subject_location'] = encoder_location.transform(data_processed['subject_location'])
-data_processed['object_category'] = encoder_category.transform(data_processed['object_category'])
+sample['subject_age'] = sample['subject_birth'].apply(lambda value: current_date.year - value.year - ((current_date.month, current_date.day) < (value.month, value.day)))
+sample['subject_gender'] = encoder_gender.transform(sample['subject_gender'])
+sample['subject_location'] = encoder_location.transform(sample['subject_location'])
+sample['object_category'] = encoder_category.transform(sample['object_category'])
 
 input = {
-    'subject_id': torch.tensor(data_processed['subject_id'], dtype=torch.long),
-    'subject_gender': torch.tensor(data_processed['subject_gender'], dtype=torch.long),
-    'subject_age': torch.tensor(data_processed['subject_age'], dtype=torch.float),
-    'subject_location': torch.tensor(data_processed['subject_location'], dtype=torch.long),
-    'object_id': torch.tensor(data_processed['object_id'], dtype=torch.long),
-    'object_category': torch.tensor(data_processed['object_category'], dtype=torch.long),
+    'subject_id': torch.tensor(sample['subject_id'], dtype=torch.long),
+    'subject_gender': torch.tensor(sample['subject_gender'], dtype=torch.long),
+    'subject_age': torch.tensor(sample['subject_age'], dtype=torch.float),
+    'subject_location': torch.tensor(sample['subject_location'], dtype=torch.long),
+    'object_id': torch.tensor(sample['object_id'], dtype=torch.long),
+    'object_category': torch.tensor(sample['object_category'], dtype=torch.long),
 }
 
 with torch.no_grad():
 
     prediction = model.predict(input)
-    print(f'Prediction: {prediction.item()}')
-
-'''
+    print(f'Prediction: {prediction}')
