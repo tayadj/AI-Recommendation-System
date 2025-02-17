@@ -30,15 +30,15 @@ def inference(request: InferenceRequest):
     try:
 
         version = request.version
-        data = request.dict()
+        data = request.model_dump()
         data.pop('version')
         data = pandas.DataFrame(data)
 
-        print(version, data)
-
         model_inference_pipeline = RecSys.core.pipeline.ModelInferencePipeline(version)
+        response = model_inference_pipeline.process(data)
+        response = response.tolist()
 
-        return {"message": "Inference completed successfully"}
+        return {"inference": response}
 
     except Exception:
 
