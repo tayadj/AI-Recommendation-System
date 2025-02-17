@@ -4,13 +4,16 @@ from typing import List
 import pandas
 import sys
 
-sys.path.append(sys.path[0]+'\\..')
+sys.path.append(sys.path[0]+"\\..")
 
 import src as RecSys
+
+
 
 application = FastAPI(
     title = "AI Recommendation System"
 )
+
 
 
 class InferenceRequest(BaseModel):
@@ -31,7 +34,7 @@ def inference(request: InferenceRequest):
 
         version = request.version
         data = request.model_dump()
-        data.pop('version')
+        data.pop("version")
         data = pandas.DataFrame(data)
 
         model_inference_pipeline = RecSys.core.pipeline.ModelInferencePipeline(version)
@@ -44,6 +47,18 @@ def inference(request: InferenceRequest):
 
         raise HTTPException(status_code = 500, detail = str(Exception))
 
+
+
+@application.get("/health")
+def health():
+
+    status = {
+        "status": "OK"
+    }
+
+    return status
+
+
 if __name__ == "__main__":
 
     import uvicorn
@@ -55,13 +70,9 @@ if __name__ == "__main__":
 # Note: Scripts are needed to be moved.
 #
 
-
-
 #
 # Train Example Script
 #
-
-
 
 df_s, df_o, df_a = RecSys.data.load(sys.path[0] + '\\..\\src\\data\\storage')
 
@@ -80,35 +91,6 @@ mtp.train()
 
 
 RecSys.model.save(mtp.model, {'encoder_gender': encoder_gender, 'encoder_category': encoder_category, 'encoder_location': encoder_location}, {'version': 'base'})
-
-
-
-#
-# Inference Example Script
-#
-#
-#
-# Note: move to model inference pipeline
-#
-
-import pandas
-import torch
-
-mip = RecSys.core.pipeline.ModelInferencePipeline('base')
-
-# imitation of data from extrenal API
-sample = pandas.DataFrame({
-    'subject_id': [4, 1],
-    'subject_gender': ['m', 'm'],
-    'subject_birth': ['1988-06-30', '2014-09-11'],
-    'subject_location': ['Tokyo', 'Berlin'],
-    'object_id': [3, 1],
-    'object_category': ['Sport', 'Sport'],
-    'timestamp': ['2026-02-17', '2026-02-17']
-})
-
-
-print(mip.process(sample))
 '''
 
 
