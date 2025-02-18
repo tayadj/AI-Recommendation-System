@@ -4,12 +4,12 @@ import os
 
 
 
-def save(data_subject, data_object, data_action, config):
+def save(dataframes, config):
 
 	path = os.path.dirname(__file__) + '\\storage\\' + config.get('version')
 
 	data = {
-		'data': [data_subject, data_object, data_action],
+		'data': dataframes,
 		'config': config
 	}
 

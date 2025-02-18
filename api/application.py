@@ -49,6 +49,17 @@ def inference(request: InferenceRequest):
 
 
 
+class IngestionRequest(BaseModel):
+
+    pass
+
+@application.post("/ingestion")
+def ingestion(request: IngestionRequest):
+
+    pass
+
+
+
 @application.get("/health")
 def health():
 
@@ -79,7 +90,10 @@ def build(version):
     # Train Example Script
     #
 
-    df_s, df_o, df_a = RecSys.data.load('base')
+    data= RecSys.data.load('base')
+    df_s = data['data'][0]
+    df_o = data['data'][1]
+    df_a = data['data'][2]
 
     dvp = RecSys.core.pipeline.DataValidationPipeline(df_s, df_o, df_a, { 'exclude': ['id', 'subject_id', 'object_id', 'birth', 'rate', 'timestamp'], 'time': ['birth', 'timestamp']})
     df_clean_s, df_clean_o, df_clean_a = dvp.process()
