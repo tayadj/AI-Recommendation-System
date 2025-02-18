@@ -73,7 +73,7 @@ if __name__ == "__main__":
 
 
 
-def build():
+def build(version):
 
     #
     # Train Example Script
@@ -89,13 +89,13 @@ def build():
     encoder_gender, encoder_category, encoder_location = mep.encoder_gender, mep.encoder_category, mep.encoder_location
 
     engine = RecSys.core.engine.Engine()
-    model = engine.produce('base')
+    model = engine.produce(version)
     mtp = RecSys.core.pipeline.ModelTrainingPipeline(model, dl)
     mtp.train()
 
 
     RecSys.model.save(mtp.model, {'encoder_gender': encoder_gender, 'encoder_category': encoder_category, 'encoder_location': encoder_location}, 
-    {'version': 'base', 'dvp_config': { 'exclude': ['id', 'subject_id', 'object_id', 'subject_birth', 'rate', 'timestamp'], 'time': ['subject_birth', 'timestamp'] }})
+    {'version': version, 'dvp_config': { 'exclude': ['id', 'subject_id', 'object_id', 'subject_birth', 'rate', 'timestamp'], 'time': ['subject_birth', 'timestamp'] }})
 
 
 
