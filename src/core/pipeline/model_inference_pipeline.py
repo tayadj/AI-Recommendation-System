@@ -50,7 +50,7 @@ class ModelInferencePipeline:
 
 		match self.data['config'].get('version'):
 
-			case 'base':
+			case "sequential" | "transformer":
 
 				self.model.load_state_dict(self.data['model'])
 				self.model.eval()
@@ -92,6 +92,10 @@ class ModelInferencePipeline:
 					prediction = self.model.predict(input)
 				
 				return prediction
+				
+			case "ensemble":
+
+				return [None]
 
 			case _:
 
