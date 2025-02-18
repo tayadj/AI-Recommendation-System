@@ -2,6 +2,8 @@ import torch
 
 class Engine():
 
+	
+
 	class SequentialModel(torch.nn.Module):
 
 		def __init__(self, config = {}):
@@ -114,7 +116,7 @@ class Engine():
 
 	def produce(self, mode, config = {}):
 
-		match mode:
+		match mode.lower():
 
 			case "sequential":
 
@@ -126,4 +128,4 @@ class Engine():
 
 			case _:
 
-				return self.Model(config)
+				return self.SequentialModel(config)
