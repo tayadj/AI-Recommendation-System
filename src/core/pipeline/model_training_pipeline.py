@@ -19,6 +19,30 @@ class ModelTrainingPipeline:
 
 		match self.version:
 
+			case 'alpha':
+
+				self.model.train()
+
+				loss_rate = 0.0
+		
+				for batch in self.dataloader:
+		
+					inputs = batch['message'].to(self.device)
+					targets = batch['tone'].to(self.device).float()
+
+					self.optimizer.zero_grad()
+					outputs = self.model(inputs).squeeze()
+					targets = targets.view_as(outputs)
+					loss = self.criterion(outputs, targets)
+					loss.backward()
+					self.optimizer.step()
+
+					loss_rate += loss.item() * inputs.size(0)
+
+				loss_rate /= len(self.dataloader.dataset)
+
+				return loss_rate				
+
 			case 'base':
 
 				self.model.train()
@@ -46,6 +70,7 @@ class ModelTrainingPipeline:
 	def train(self):
 		
 		self.model.to(self.device)
+
 		for epoch in range(self.epochs):
 
 			loss_rate = self.train_step()

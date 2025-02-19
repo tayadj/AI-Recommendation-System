@@ -26,9 +26,10 @@ def BuildScript(model_version, data_version):
             engine = src.core.Engine()
             model = engine.produce('alpha')
 
-            for record in data_loader:
-                
-                print(record)
+            model_training_pipeline = src.core.pipeline.ModelTrainingPipeline(model, data_loader, {'version': 'alpha'})
+            model_training_pipeline.train()
+
+            src.model.save(model_training_pipeline.model, {'encoder' : encoder}, {'version': 'alpha'})
 
         case 'base':
 

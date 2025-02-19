@@ -47,7 +47,7 @@ class ModelEmbeddingPipeline:
 						'message': message_tensor,
 						'tone': torch.tensor(record['tone'], dtype = torch.float)
 					}
-
+	'''
 				case 'base':
 
 					return {
@@ -59,6 +59,7 @@ class ModelEmbeddingPipeline:
 						'object_category': torch.tensor(record['object_category'], dtype=torch.long),
 						'rate': torch.tensor(record['rate'], dtype=torch.float),
 					}
+	'''
 
             
         
@@ -78,6 +79,7 @@ class ModelEmbeddingPipeline:
 
 	# featuring, encode, merge, describe functions - to delete
 	# move its functionality to process
+	'''
 
 	def featuring(self):
 
@@ -128,6 +130,8 @@ class ModelEmbeddingPipeline:
 				self.config['dimension_location'] = self.data['subject_location'].nunique()
 				self.config['dimension_category'] = self.data['object_category'].nunique()
 
+	'''
+
 	def process(self, data):
 
 		match self.version:
@@ -142,6 +146,7 @@ class ModelEmbeddingPipeline:
 				self.dataset = self.Dataset(self.data, {'version': 'alpha', 'encoder': self.encoder, 'message_length': self.message_length})
 				self.dataloader = torch.utils.data.DataLoader(self.dataset, batch_size = self.batch_size, shuffle = True)
 
+		'''
 			case 'base':
 
 				self.data_subject = data[0]
@@ -155,7 +160,7 @@ class ModelEmbeddingPipeline:
 
 				self.dataset = self.Dataset(self.data, {'version': self.version})
 				self.dataloader = torch.utils.data.DataLoader(self.dataset, batch_size = self.batch_size, shuffle = True)
-
+		'''
 		return self.dataloader
 
 		
