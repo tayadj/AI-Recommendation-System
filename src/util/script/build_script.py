@@ -14,6 +14,13 @@ def BuildScript(model_version, data_version):
 
     match data_version:
 
+        case 'alpha':
+
+            data_validation_pipeline = src.core.pipeline.DataValidationPipeline({'version': 'alpha'})
+            data_clean = data_validation_pipeline.process(data['data'])
+
+            model_embedding_pipeline = src.core.pipeline.ModelEmbeddingPipeline({'version': 'alpha'})
+
         case 'base':
 
             dataframe_subject = data['data'][0]
