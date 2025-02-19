@@ -22,7 +22,7 @@ class ModelInferencePipeline:
 
 		match self.data['config'].get('version'):
 
-			case 'base':
+			case "sequential" | "transformer":
 
 				text = re.sub(r'([{}])'.format(re.escape(string.punctuation)), r' \1 ', text)
 				text = re.sub(r'\s+', ' ', text).strip()
@@ -34,15 +34,8 @@ class ModelInferencePipeline:
 				text = text.lower()
 
 			case _:
-
-				text = re.sub(r'([{}])'.format(re.escape(string.punctuation)), r' \1 ', text)
-				text = re.sub(r'\s+', ' ', text).strip()
-				text = re.sub(r'<[^>]+>', '', text)
-				text = re.sub(r'\[\d+\]|&#91;\d+&#93;', '', text)
-				text = re.sub(r'&#\d+;', '', text)
-				text = re.sub(r'\s+', ' ', text)
-				text = text.strip()
-				text = text.lower()
+				
+				pass
 
 		return text
 

@@ -33,3 +33,5 @@ def BuildScript(model_version, data_version):
 
             src.model.save(mtp.model, {'encoder_gender': encoder_gender, 'encoder_category': encoder_category, 'encoder_location': encoder_location}, 
             {'version': model_version, 'dvp_config': { 'exclude': ['id', 'subject_id', 'object_id', 'subject_birth', 'rate', 'timestamp'], 'time': ['subject_birth', 'timestamp'] }})
+
+            # Needed to add model and data versions to src.model.save

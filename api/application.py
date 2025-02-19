@@ -204,7 +204,7 @@ def build(request: BuildRequest):
 
         Request Body:
         {
-	        "model": "sequential",
+            "model": "sequential",
             "data": "base"
         }
 
