@@ -147,7 +147,7 @@ def ingestion(request: IngestionRequest):
         Status Code: 200 OK
         Response Body:
         {
-
+            "status": "OK"
         }
 
         Status Code: 500 Internal Server error
@@ -172,7 +172,7 @@ def ingestion(request: IngestionRequest):
         data_ingestion_pipeline = RecSys.core.pipeline.DataIngestionPipeline(version)
         data_ingestion_pipeline.process(dataframes, config)
 
-        return { }
+        return { "status": "OK" }
 
     except Exception as exception:
 
@@ -187,12 +187,45 @@ class BuildRequest(BaseModel):
 @application.post("/build")
 def build(request: BuildRequest):
 
+    """
+    Endpoint: 
+
+        POST /build
+
+    Request:
+
+        Headers:
+            Content-Type: application/json
+
+        Body Parameters:
+            version (string): Version of the model to be built.
+
+        Request Body:
+        {
+	        "version": "build"
+        }
+
+    Response:
+    
+        Status Code: 200 OK
+        Response Body:
+        {
+            "status": "OK"
+        }
+
+        Status Code: 500 Internal Server error
+        Response Body:
+        {
+            "detail": "Error message"
+        }
+    """
+
     try:
 
         version = request.version
         RecSys.util.script.BuildScript(version)
 
-        return {"status": "OK"}
+        return { "status": "OK" }
 
     except Exception as exception:
 
@@ -203,11 +236,21 @@ def build(request: BuildRequest):
 @application.get("/health")
 def health():
 
-    status = {
-        "status": "OK"
-    }
+    """
+    Endpoint: 
 
-    return status
+        GET /build 
+
+    Response:
+    
+        Status Code: 200 OK
+        Response Body:
+        {
+            "status": "OK"
+        }
+    """
+
+    return { "status": "OK" }
 
 
 
