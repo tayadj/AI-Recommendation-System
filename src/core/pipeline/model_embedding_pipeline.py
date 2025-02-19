@@ -13,6 +13,13 @@ class ModelEmbeddingPipeline:
 
 			self.data = data
 			self.version = config.get('version')
+			
+			match self.version:
+
+				case 'alpha':
+
+					self.encoder = config.get('encoder')
+					self.message_length = config.get('message_length')
 
 		def __len__(self):
 
@@ -26,8 +33,19 @@ class ModelEmbeddingPipeline:
 
 				case 'alpha':
 
+					message_tensor = self.encoder.transform(record['message'].split())
+
+					if len(message_tensor) < self.message_length:
+
+						message_tensor = torch.cat([torch.tensor(message_tensor, dtype = torch.long), torch.zeros(self.message_length - len(message_tensor), dtype = torch.long)])
+
+					else:
+
+						message_tensor = torch.tensor(message_tensor[:self.message_length], dtype = torch.long)
+
 					return {
-						'message': torch.tensor
+						'message': message_tensor,
+						'tone': torch.tensor(record['tone'], dtype = torch.float)
 					}
 
 				case 'base':
@@ -50,6 +68,13 @@ class ModelEmbeddingPipeline:
 
 		self.version = config.get('version')
 		self.batch_size = config.get('batch_size', 4)
+
+		match self.version:
+
+			case 'alpha':
+
+				self.message_length = config.get('message_length', 128)
+				
 
 	# featuring, encode, merge, describe functions - to delete
 	# move its functionality to process
@@ -109,9 +134,12 @@ class ModelEmbeddingPipeline:
 
 			case 'alpha':
 			
-				self.data = data['text']	
+				self.data = data['text']
+				vocabulary = [token for message in self.data['message'] for token in message.split()]
+				self.encoder = sklearn.preprocessing.LabelEncoder()
+				self.encoder.fit(vocabulary)
 
-				self.dataset = self.Dataset(self.data, {'version': 'alpha'})
+				self.dataset = self.Dataset(self.data, {'version': 'alpha', 'encoder': self.encoder, 'message_length': self.message_length})
 				self.dataloader = torch.utils.data.DataLoader(self.dataset, batch_size = self.batch_size, shuffle = True)
 
 			case 'base':

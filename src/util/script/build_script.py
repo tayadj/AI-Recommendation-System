@@ -20,6 +20,15 @@ def BuildScript(model_version, data_version):
             data_clean = data_validation_pipeline.process(data['data'])
 
             model_embedding_pipeline = src.core.pipeline.ModelEmbeddingPipeline({'version': 'alpha'})
+            data_loader = model_embedding_pipeline.process(data_clean)
+            encoder = model_embedding_pipeline.encoder
+
+            engine = src.core.Engine()
+            model = engine.produce('alpha')
+
+            for record in data_loader:
+                
+                print(record)
 
         case 'base':
 
