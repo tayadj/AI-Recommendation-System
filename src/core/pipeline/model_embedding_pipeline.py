@@ -24,6 +24,12 @@ class ModelEmbeddingPipeline:
 
 			match self.version:
 
+				case 'alpha':
+
+					return {
+						'message': torch.tensor
+					}
+
 				case 'base':
 
 					return {
@@ -35,6 +41,7 @@ class ModelEmbeddingPipeline:
 						'object_category': torch.tensor(record['object_category'], dtype=torch.long),
 						'rate': torch.tensor(record['rate'], dtype=torch.float),
 					}
+
             
         
 
@@ -42,8 +49,10 @@ class ModelEmbeddingPipeline:
 	def __init__(self, config = {}):
 
 		self.version = config.get('version')
-
 		self.batch_size = config.get('batch_size', 4)
+
+	# featuring, encode, merge, describe functions - to delete
+	# move its functionality to process
 
 	def featuring(self):
 
@@ -97,6 +106,13 @@ class ModelEmbeddingPipeline:
 	def process(self, data):
 
 		match self.version:
+
+			case 'alpha':
+			
+				self.data = data['text']	
+
+				self.dataset = self.Dataset(self.data, {'version': 'alpha'})
+				self.dataloader = torch.utils.data.DataLoader(self.dataset, batch_size = self.batch_size, shuffle = True)
 
 			case 'base':
 

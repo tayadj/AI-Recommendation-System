@@ -4,12 +4,12 @@ import os
 
 
 
-def save(dataframes, config):
+def save(dataframe, config):
 
 	path = os.path.dirname(__file__) + '\\storage\\' + config.get('version')
 
 	data = {
-		'data': dataframes,
+		'data': dataframe,
 		'config': config
 	}
 

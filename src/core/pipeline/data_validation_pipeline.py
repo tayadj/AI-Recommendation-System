@@ -22,6 +22,7 @@ class DataValidationPipeline:
                 text = re.sub(r'<[^>]+>', '', text)
                 text = re.sub(r'\[\d+\]|&#91;\d+&#93;', '', text)
                 text = re.sub(r'&#\d+;', '', text)
+                text = re.sub(r'[^\w\s]', '', text)
                 text = re.sub(r'\s+', ' ', text)
                 text = text.strip()
                 text = text.lower()     
@@ -50,13 +51,13 @@ class DataValidationPipeline:
 
         return text
 
-    def process(self, data, config):
+    def process(self, data, config = {}):
 
         match self.version: 
 
             case 'alpha':
 
-                pass    
+                data['text']['message'] = data['text']['message'].map(self.validate)
 
             case 'base':
 
