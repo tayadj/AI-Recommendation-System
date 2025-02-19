@@ -12,6 +12,8 @@ def BuildScript(model_version, data_version = "base"):
 
     data = src.data.load(data_version)
 
+    # add modes for data extraction
+
     df_s = data['data'][0]
     df_o = data['data'][1]
     df_a = data['data'][2]

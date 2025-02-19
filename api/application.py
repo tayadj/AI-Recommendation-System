@@ -68,7 +68,6 @@ def inference(request: InferenceRequest):
         {
             "detail": "Error message"
         }
-
     """
 
     try:
@@ -100,7 +99,84 @@ class IngestionRequest(BaseModel):
 @application.post("/ingestion")
 def ingestion(request: IngestionRequest):
 
-    pass
+    """
+    Endpoint: 
+
+        POST /ingestion
+
+    Request:
+
+        Headers:
+            Content-Type: application/json
+
+        Body Parameters:
+            version (string): Version of the data to be ingested.
+            config (object): Dictionary of configuration parameters.
+            data (object): Dictionary of dataframes, where each key is a dataframe name and the value is a dictionary of corresponding data.
+
+        Request body:
+        {
+	        "version": "base",
+	        "config": {
+                "mode": "append"
+            },
+	        "data": {
+                "subject": {
+                    "id": [100, 101, 102],
+                    "gender": [ "m", "m", "f" ],
+                    "birth": [ "2001-01-01", "1982-12-10", "2003-04-21" ],
+                    "location": [ "Tokyo", "Paris", "Moscow" ]
+                },
+                "object": {
+                    "id": [100],
+                    "name": ["Sunflower seeds"],
+                    "description": ["This seeds are ideal for your garden"],
+                    "category": ["Biology"]
+                },
+                "action": {
+                    subject_id: [100],
+                    object_id: [3],
+                    rate: [0.35],
+                    timestamp: [ "2025-02-19" ]
+                }
+	        }
+        }
+
+    Response:
+    
+        Status Code: 200 OK
+        Response Body:
+        {
+
+        }
+
+        Status Code: 500 Internal Server error
+        Response Body:
+        {
+            "detail": "Error message"
+        }
+    """
+
+    try:
+
+        version = request.version
+        config = request.config
+        data = request.data
+
+        dataframes = []
+
+        for dataframe in data:
+            
+            dataframes.append(pandas.DataFrame(data[dataframe]))
+
+        data_ingestion_pipeline = RecSys.core.pipeline.DataIngestionPipeline(version)
+        data_ingestion_pipeline.process(dataframes, config)
+
+        return { }
+
+    except Exception as exception:
+
+        raise HTTPException(status_code = 500, detail = str(exception))
 
 
 
