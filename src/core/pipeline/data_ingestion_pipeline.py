@@ -7,14 +7,13 @@ import os
 
 class DataIngestionPipeline:
 
-	def __init__(self):
+	def __init__(self, version):
 
-		pass
+		self.version = version
 
-	def ingestion(self, data, config = {}):
+	def process(self, data, config = {}):
 
 		mode = config.get('mode', 'new')
-		version = config.get('version')
 
 		match mode:
 
@@ -24,7 +23,17 @@ class DataIngestionPipeline:
 
 			case 'append':
 
-				pass
+				loaded = src.data.load(self.version)
+				storage = loaded['data']
+				config = loaded['config']
+
+				concatenated = []
+
+				for index in range(len(storage)):
+
+					concatenated.append(pandas.concat([storage[index], data[index]], ignore_index = True))
+
+				src.data.save(concatenated, config)					
 
 			case _:
 
