@@ -182,7 +182,8 @@ def ingestion(request: IngestionRequest):
 
 class BuildRequest(BaseModel):
 
-    version: str
+    model: str
+    data: str
 
 @application.post("/build")
 def build(request: BuildRequest):
@@ -198,11 +199,13 @@ def build(request: BuildRequest):
             Content-Type: application/json
 
         Body Parameters:
-            version (string): Version of the model to be built.
+            model (string): Version of the model to be built.
+            data (string): Version of the data to be used.
 
         Request Body:
         {
-	        "version": "build"
+	        "model": "sequential",
+            "data": "base"
         }
 
     Response:
@@ -222,8 +225,9 @@ def build(request: BuildRequest):
 
     try:
 
-        version = request.version
-        RecSys.util.script.BuildScript(version)
+        model = request.model
+        data = request.data
+        RecSys.util.script.BuildScript(model, data)
 
         return { "status": "OK" }
 
@@ -239,7 +243,7 @@ def health():
     """
     Endpoint: 
 
-        GET /build 
+        GET /health 
 
     Response:
     

@@ -6,14 +6,9 @@ import re
 
 class DataValidationPipeline:
 
-    def __init__(self, data_subject, data_object, data_action, config = {}):
+    def __init__(self, config = {}):
 
-        self.data_subject = data_subject
-        self.data_object = data_object
-        self.data_action = data_action
-
-        self.exlude = config.get('exclude', [])
-        self.time = config.get('time', [])
+        self.version = config.get('version')
 
     def clean(self, text):
 
@@ -32,20 +27,27 @@ class DataValidationPipeline:
 
         return text
 
-    def process(self):
+    def process(self, data, config):
 
-        for data in [self.data_subject, self.data_object, self.data_action]:
+        match self.version: 
 
-            for attribute in data.columns:
+            case 'base':
 
-                if attribute not in self.exlude:
+                self.exlude = config.get('exclude', [])
+                self.time = config.get('time', [])
 
-                    data[attribute] = data[attribute].map(str)
-                    data[attribute] = data[attribute].map(self.clean)
-                    data[attribute] = data[attribute].map(self.impute)
+                for dataframe in data:
 
-                if attribute in self.time:
+                    for attribute in dataframe.columns:
 
-                    data[attribute] = pandas.to_datetime(data[attribute], format='%Y-%m-%d')
+                        if attribute not in self.exlude:
 
-        return self.data_subject, self.data_object, self.data_action
+                            dataframe[attribute] = dataframe[attribute].map(str)
+                            dataframe[attribute] = dataframe[attribute].map(self.clean)
+                            dataframe[attribute] = dataframe[attribute].map(self.impute)
+
+                        if attribute in self.time:
+
+                            dataframe[attribute] = pandas.to_datetime(dataframe[attribute], format='%Y-%m-%d')
+
+                return data

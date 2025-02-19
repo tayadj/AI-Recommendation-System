@@ -6,6 +6,7 @@ class ModelTrainingPipeline:
 
 		self.model = model
 		self.dataloader = dataloader
+		self.version = config.get('version')
 
 		self.epochs = config.get('epochs', 5)
 		self.learning_rate = config.get('learning_rate', 0.001)
@@ -16,27 +17,31 @@ class ModelTrainingPipeline:
 
 	def train_step(self):
 
-		self.model.train()
+		match self.version:
 
-		loss_rate = 0.0
+			case 'base':
+
+				self.model.train()
+
+				loss_rate = 0.0
 		
-		for batch in self.dataloader:
+				for batch in self.dataloader:
 		
-			inputs = {key: value.to(self.device) for key, value in batch.items() if key != 'rate'}
-			targets = batch['rate'].to(self.device).float()
+					inputs = {key: value.to(self.device) for key, value in batch.items() if key != 'rate'}
+					targets = batch['rate'].to(self.device).float()
 
-			self.optimizer.zero_grad()
-			outputs = self.model(inputs).squeeze()
-			targets = targets.view_as(outputs)
-			loss = self.criterion(outputs, targets)
-			loss.backward()
-			self.optimizer.step()
+					self.optimizer.zero_grad()
+					outputs = self.model(inputs).squeeze()
+					targets = targets.view_as(outputs)
+					loss = self.criterion(outputs, targets)
+					loss.backward()
+					self.optimizer.step()
 
-			loss_rate += loss.item() * inputs['subject_id'].size(0)
+					loss_rate += loss.item() * inputs['subject_id'].size(0)
 
-		loss_rate /= len(self.dataloader.dataset)
+				loss_rate /= len(self.dataloader.dataset)
 
-		return loss_rate
+				return loss_rate
 
 	def train(self):
 		
