@@ -20,6 +20,7 @@ class DataIngestionPipeline:
 			case 'new':
 
 				config['version'] = self.version
+				config.pop('mode')
 				src.data.save(data, config)
 
 			case 'append':
@@ -28,15 +29,10 @@ class DataIngestionPipeline:
 				storage = loaded['data']
 				config = loaded['config']
 
-				concatenated = []
+				concatenated = {}
 
-				for index in range(len(storage)):
+				for key, value in storage.items():
 
-					concatenated.append(pandas.concat([storage[index], data[index]], ignore_index = True))
+					concatenated[key] = pandas.concat([value, data[key]], ignore_index = True)
 
-				src.data.save(concatenated, config)					
-
-			case _:
-
-				pass
-
+				src.data.save(concatenated, config)

@@ -10,6 +10,29 @@ class DataValidationPipeline:
 
         self.version = config.get('version')
 
+
+    def validate(self, text):
+
+        match self.version:
+
+            case 'alpha':
+
+                text = re.sub(r'([{}])'.format(re.escape(string.punctuation)), r' \1 ', text)
+                text = re.sub(r'\s+', ' ', text).strip()
+                text = re.sub(r'<[^>]+>', '', text)
+                text = re.sub(r'\[\d+\]|&#91;\d+&#93;', '', text)
+                text = re.sub(r'&#\d+;', '', text)
+                text = re.sub(r'\s+', ' ', text)
+                text = text.strip()
+                text = text.lower()     
+                
+            case 'beta':
+
+                pass
+
+        return text
+
+
     def clean(self, text):
 
         text = re.sub(r'([{}])'.format(re.escape(string.punctuation)), r' \1 ', text)
@@ -31,6 +54,10 @@ class DataValidationPipeline:
 
         match self.version: 
 
+            case 'alpha':
+
+                pass    
+
             case 'base':
 
                 self.exlude = config.get('exclude', [])
@@ -50,4 +77,4 @@ class DataValidationPipeline:
 
                             dataframe[attribute] = pandas.to_datetime(dataframe[attribute], format='%Y-%m-%d')
 
-                return data
+        return data

@@ -11,7 +11,7 @@ import src as RecSys
 
 
 application = FastAPI(
-    title = "AI Recommendation System"
+    title = "AI System"
 )
 
 
@@ -163,14 +163,14 @@ def ingestion(request: IngestionRequest):
         config = request.config
         data = request.data
 
-        dataframes = []
+        dataframe = {}
 
-        for dataframe in data:
-            
-            dataframes.append(pandas.DataFrame(data[dataframe]))
+        for key, value in data.items():
+
+            dataframe[key] = pandas.DataFrame(value)
 
         data_ingestion_pipeline = RecSys.core.pipeline.DataIngestionPipeline(version)
-        data_ingestion_pipeline.process(dataframes, config)
+        data_ingestion_pipeline.process(dataframe, config)
 
         return { "status": "OK" }
 
