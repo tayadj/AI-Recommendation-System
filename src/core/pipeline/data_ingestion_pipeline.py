@@ -19,7 +19,8 @@ class DataIngestionPipeline:
 
 			case 'new':
 
-				pass
+				config['version'] = self.version
+				src.data.save(data, config)
 
 			case 'append':
 
