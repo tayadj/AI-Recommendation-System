@@ -4,7 +4,27 @@ import torch
 
 class Engine():
 
+	"""
+		Engine class that encapsulates various models.
+
+		Available models:
+			- Model Alpha, which is used for sentiment analysis.
+	"""
+
 	class ModelAlpha(torch.nn.Module):
+
+		"""
+			Model Alpha is a neural network model designed for sentiment analysis.
+        
+			Attributes:
+				- dimension_embedding (int): Dimension of the embedding vectors.
+				- dimension_hidden (int): Dimension of the hidden state in the LSTM.
+				- dimension_output (int): Dimension of the output.
+				- vocabulary_size (int): Size of the input vocabulary.
+				- layers_number (int): Number of LSTM layers.
+				- bidirectional (bool): bidirectional LSTM mode.
+				- dropout (float): Dropout rate.
+		"""
 
 		def __init__(self, config = {}):
 
@@ -48,11 +68,20 @@ class Engine():
 
 				return prediction
 
-	def __init__(self):
-	
-		pass
+
 
 	def produce(self, mode, config = {}):
+
+		"""
+			Factory method to produce models.
+        
+			Args:
+				- mode (str): The type of model to produce.
+				- config (dict): Configuration dictionary for the model.
+        
+			Returns:
+				- torch.nn.Module: An instance of the specified model.
+		"""
 
 		match mode.lower():
 
