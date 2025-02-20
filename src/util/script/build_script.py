@@ -21,7 +21,6 @@ def BuildScript(model_version, data_version):
 
             model_embedding_pipeline = src.core.pipeline.ModelEmbeddingPipeline({'version': 'alpha'})
             data_loader = model_embedding_pipeline.process(data_clean)
-            encoder = model_embedding_pipeline.encoder
 
             engine = src.core.Engine()
             model = engine.produce('alpha')
@@ -29,7 +28,10 @@ def BuildScript(model_version, data_version):
             model_training_pipeline = src.core.pipeline.ModelTrainingPipeline(model, data_loader, {'version': 'alpha'})
             model_training_pipeline.train()
 
-            src.model.save(model_training_pipeline.model, {'encoder' : encoder}, {'version': 'alpha'})
+            config = {'version': 'alpha', 'message_length': model_embedding_pipeline.message_length}
+            environment = {'encoder' : model_embedding_pipeline.encoder}
+
+            src.model.save(model_training_pipeline.model, environment, config)
 
         case 'base':
 
