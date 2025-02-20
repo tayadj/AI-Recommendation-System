@@ -6,7 +6,7 @@ import sys
 
 sys.path.append(sys.path[0]+"\\..")
 
-import src as RecSys
+import src
 
 
 
@@ -77,7 +77,7 @@ def inference(request: InferenceRequest):
         data = request.data
         data = pandas.DataFrame(data)
 
-        model_inference_pipeline = RecSys.core.pipeline.ModelInferencePipeline(version)
+        model_inference_pipeline = src.core.pipeline.ModelInferencePipeline(version)
         response = model_inference_pipeline.process(data)
         response = response.tolist()
 
@@ -169,7 +169,7 @@ def ingestion(request: IngestionRequest):
 
             dataframe[key] = pandas.DataFrame(value)
 
-        data_ingestion_pipeline = RecSys.core.pipeline.DataIngestionPipeline(version)
+        data_ingestion_pipeline = src.core.pipeline.DataIngestionPipeline(version)
         data_ingestion_pipeline.process(dataframe, config)
 
         return { "status": "OK" }
@@ -227,7 +227,7 @@ def build(request: BuildRequest):
 
         model = request.model
         data = request.data
-        RecSys.util.script.BuildScript(model, data)
+        src.util.script.BuildScript(model, data)
 
         return { "status": "OK" }
 
