@@ -2,6 +2,7 @@ import src.core
 import src.model
 import string
 import pandas
+import numpy
 import torch
 import sys
 import os
@@ -36,7 +37,19 @@ class ModelInferencePipeline:
 
 				for record in sample['message']:
 
-					message_tensor = encoder.transform(record.split())
+					message_tensor = []
+
+					for value in record.split():
+
+						try:
+
+							message_tensor.append(encoder.transform([value])[0])
+
+						except ValueError:
+
+							message_tensor.append(0)
+
+					message_tensor = numpy.array(message_tensor)
 
 					if len(message_tensor) < message_length:
 
@@ -45,6 +58,8 @@ class ModelInferencePipeline:
 					else:
 
 						message_tensor = torch.tensor(message_tensor[:message_length], dtype = torch.long)
+
+					print(message_tensor)
 
 					input.append(message_tensor)
 
