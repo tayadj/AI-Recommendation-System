@@ -11,10 +11,10 @@ def load(version):
         Loads the data from the storage.
 
         Args:
-        version (str): The version of the data to load.
+            - version (str): The version of the data to load.
 
         Returns:
-        torch.Tensor: The data loaded from the specified version.
+            - dict: The data and config loaded from the specified version.
     """
 
     path = os.path.dirname(__file__) + '\\storage\\' + version
