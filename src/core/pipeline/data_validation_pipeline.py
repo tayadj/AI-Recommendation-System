@@ -10,7 +10,6 @@ class DataValidationPipeline:
 
         self.version = config.get('version')
 
-
     def validate(self, text):
 
         match self.version:
@@ -26,28 +25,6 @@ class DataValidationPipeline:
                 text = re.sub(r'\s+', ' ', text)
                 text = text.strip()
                 text = text.lower()     
-                
-            case 'beta':
-
-                pass
-
-        return text
-
-
-    def clean(self, text):
-
-        text = re.sub(r'([{}])'.format(re.escape(string.punctuation)), r' \1 ', text)
-        text = re.sub(r'\s+', ' ', text).strip()
-        text = re.sub(r'<[^>]+>', '', text)
-        text = re.sub(r'\[\d+\]|&#91;\d+&#93;', '', text)
-        text = re.sub(r'&#\d+;', '', text)
-        text = re.sub(r'\s+', ' ', text)
-        text = text.strip()
-        text = text.lower()
-
-        return text
-
-    def impute(self, text):
 
         return text
 
@@ -58,24 +35,5 @@ class DataValidationPipeline:
             case 'alpha':
 
                 data['text']['message'] = data['text']['message'].map(self.validate)
-
-            case 'base':
-
-                self.exlude = config.get('exclude', [])
-                self.time = config.get('time', [])
-
-                for dataframe in data:
-
-                    for attribute in dataframe.columns:
-
-                        if attribute not in self.exlude:
-
-                            dataframe[attribute] = dataframe[attribute].map(str)
-                            dataframe[attribute] = dataframe[attribute].map(self.clean)
-                            dataframe[attribute] = dataframe[attribute].map(self.impute)
-
-                        if attribute in self.time:
-
-                            dataframe[attribute] = pandas.to_datetime(dataframe[attribute], format='%Y-%m-%d')
 
         return data
