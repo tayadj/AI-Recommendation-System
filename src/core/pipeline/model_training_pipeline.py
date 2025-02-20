@@ -44,30 +44,6 @@ class ModelTrainingPipeline:
 
 				return loss_rate				
 
-			case 'base':
-
-				self.model.train()
-
-				loss_rate = 0.0
-		
-				for batch in self.dataloader:
-		
-					inputs = {key: value.to(self.device) for key, value in batch.items() if key != 'rate'}
-					targets = batch['rate'].to(self.device).float()
-
-					self.optimizer.zero_grad()
-					outputs = self.model(inputs).squeeze()
-					targets = targets.view_as(outputs)
-					loss = self.criterion(outputs, targets)
-					loss.backward()
-					self.optimizer.step()
-
-					loss_rate += loss.item() * inputs['subject_id'].size(0)
-
-				loss_rate /= len(self.dataloader.dataset)
-
-				return loss_rate
-
 	def train(self):
 		
 		self.model.to(self.device)
