@@ -1,131 +1,61 @@
 import torch
 
+
+
 class Engine():
 
-	
-
-	class SequentialModel(torch.nn.Module):
+	class ModelAlpha(torch.nn.Module):
 
 		def __init__(self, config = {}):
-	
-			super(Engine.SequentialModel, self).__init__()
 
-			self.dimension_subject = config.get('dimension_subject', 1024)
-			self.dimension_object = config.get('dimension_object', 1024)
-			self.dimension_gender = config.get('dimension_gender', 2)
-			self.dimension_location = config.get('dimension_location', 128)
-			self.dimension_category = config.get('dimension_category', 128)
-			self.batch_size = config.get('batch_size', 4)
+			super(Engine.ModelAlpha, self).__init__()
 
-			self.embedding_subject = torch.nn.Embedding(self.dimension_subject, 128)
-			self.embedding_object = torch.nn.Embedding(self.dimension_object, 128)
-			self.embedding_gender = torch.nn.Embedding(self.dimension_gender, 8)
-			self.embedding_location = torch.nn.Embedding(self.dimension_location, 32)
-			self.embedding_category = torch.nn.Embedding(self.dimension_category, 32)
+			self.dimension_embedding = config.get('dimension_embedding', 128)
+			self.dimension_hidden = config.get('dimension_hidden', 128)
+			self.dimension_output = config.get('dimension_output', 1)
+			self.vocabulary_size = config.get('vocabulary_size', 10000)
+			self.layers_number = config.get('layers_number', 3)
+			self.bidirectional = config.get('bidirectional', True)
+			self.dropout = config.get('dropout', 0.5)
 
-			self.network = torch.nn.Sequential(
-				torch.nn.Linear(128 + 128 + 8 + 32 + 32, 512),
-				torch.nn.ReLU(),
-				torch.nn.Linear(512, 256),
-				torch.nn.ReLU(),
-				torch.nn.Linear(256, 1),
-				torch.nn.Tanh()
+			self.embedding = torch.nn.Embedding(self.vocabulary_size, self.dimension_embedding)
+			self.LSTM = torch.nn.LSTM(
+				self.dimension_embedding,
+				self.dimension_hidden,
+				num_layers = self.layers_number,
+				bidirectional = self.bidirectional,
+				dropout = self.dropout,
+				batch_first = True
 			)
+			self.dense = torch.nn.Linear(self.dimension_hidden * 2 if self.bidirectional else self.dimension_hidden, self.dimension_output)
+			self.Tanh = torch.nn.Tanh()
 
 		def forward(self, x):
 
-			subject_embedded = self.embedding_subject(x['subject_id'])
-			object_embedded = self.embedding_object(x['object_id'])
-			gender_embedded = self.embedding_gender(x['subject_gender'])
-			location_embedded = self.embedding_location(x['subject_location'])
-			category_embedded = self.embedding_category(x['object_category'])
-
-			embedding = torch.cat((subject_embedded, object_embedded, gender_embedded, location_embedded, category_embedded), dim=1)
-			embedding = embedding.view(embedding.size(0), -1)
-
-			return self.network(embedding)
+			embedded = self.embedding(x)
+			LSTM_output, (hidden, cell) = self.LSTM(embedded)
+			hidden = torch.cat((hidden[-2,:,:], hidden[-1,:,:]), dim = 1) if self.bidirectional else hidden[-1,:,:]
+			output = self.dense(hidden)
+			return self.Tanh(output)
 
 		def predict(self, x):
 
-			return self.forward(x)
+			with torch.no_grad():
 
+				self.eval()
+				prediction = self.forward(x)
+				self.train()
 
-
-	class TransformerModel(torch.nn.Module):
-
-		def __init__(self, config = {}):
-	
-			super(Engine.TransformerModel, self).__init__()
-
-			self.dimension_subject = config.get('dimension_subject', 1024)
-			self.dimension_object = config.get('dimension_object', 1024)
-			self.dimension_gender = config.get('dimension_gender', 2)
-			self.dimension_location = config.get('dimension_location', 128)
-			self.dimension_category = config.get('dimension_category', 128)
-			self.batch_size = config.get('batch_size', 4)
-
-			self.embedding_subject = torch.nn.Embedding(self.dimension_subject, 128)
-			self.embedding_object = torch.nn.Embedding(self.dimension_object, 128)
-			self.embedding_gender = torch.nn.Embedding(self.dimension_gender, 8)
-			self.embedding_location = torch.nn.Embedding(self.dimension_location, 32)
-			self.embedding_category = torch.nn.Embedding(self.dimension_category, 32)
-
-			self.transformer_layer = torch.nn.TransformerEncoderLayer(
-				d_model = 128 + 128 + 8 + 32 + 32,
-				nhead = 8,
-				dim_feedforward = 512,
-				dropout = 0.05
-			)
-
-			self.network = torch.nn.Sequential(
-				torch.nn.Linear(128 + 128 + 8 + 32 + 32, 512),
-				torch.nn.ReLU(),
-				torch.nn.Linear(512, 256),
-				torch.nn.ReLU(),
-				torch.nn.Linear(256, 1),
-				torch.nn.Tanh()
-			)
-
-		def forward(self, x):
-
-			subject_embedded = self.embedding_subject(x['subject_id'])
-			object_embedded = self.embedding_object(x['object_id'])
-			gender_embedded = self.embedding_gender(x['subject_gender'])
-			location_embedded = self.embedding_location(x['subject_location'])
-			category_embedded = self.embedding_category(x['object_category'])
-
-			embedding = torch.cat((subject_embedded, object_embedded, gender_embedded, location_embedded, category_embedded), dim=1)
-			embedding = embedding.view(embedding.size(0), -1)
-
-			encoded = self.transformer_layer(embedding.unsqueeze(0))
-			encoded = encoded.squeeze(0)
-
-			return self.network(encoded)
-
-		def predict(self, x):
-
-			return self.forward(x)
-
-
+				return prediction
 
 	def __init__(self):
 	
 		pass
 
-
-
 	def produce(self, mode, config = {}):
 
 		match mode.lower():
 
-			case "sequential":
+			case 'alpha':
 
-				return self.SequentialModel(config)
-
-			case "transformer":
-
-				return self.TransformerModel(config)
-
-			case _:
-
-				return self.SequentialModel(config)
+				return self.ModelAlpha(config)
