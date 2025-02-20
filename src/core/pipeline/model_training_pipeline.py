@@ -14,6 +14,7 @@ class ModelTrainingPipeline:
 
 		self.criterion = torch.nn.MSELoss()
 		self.optimizer = torch.optim.Adam(self.model.parameters(), lr = self.learning_rate)
+		# add criterion, optimizer to config and save it in model.save
 
 	def train_step(self):
 
