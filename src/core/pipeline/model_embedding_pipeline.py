@@ -51,7 +51,7 @@ class ModelEmbeddingPipeline:
 	def __init__(self, config = {}):
 
 		self.version = config.get('version')
-		self.batch_size = config.get('batch_size', 4)
+		self.batch_size = config.get('batch_size', 32)
 
 		match self.version:
 

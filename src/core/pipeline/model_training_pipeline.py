@@ -8,7 +8,7 @@ class ModelTrainingPipeline:
 		self.dataloader = dataloader
 		self.version = config.get('version')
 
-		self.epochs = config.get('epochs', 10)
+		self.epochs = config.get('epochs', 5)
 		self.learning_rate = config.get('learning_rate', 0.001)
 		self.device = config.get('device', 'cpu')
 
