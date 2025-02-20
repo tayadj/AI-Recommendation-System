@@ -59,8 +59,6 @@ class ModelInferencePipeline:
 
 						message_tensor = torch.tensor(message_tensor[:message_length], dtype = torch.long)
 
-					print(message_tensor)
-
 					input.append(message_tensor)
 
 				return self.model.predict(torch.stack(input, dim = 0))
