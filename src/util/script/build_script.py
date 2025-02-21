@@ -1,6 +1,5 @@
-import src.core
-import src.model
-import src.data
+import src
+
 import string
 import pandas
 import torch
