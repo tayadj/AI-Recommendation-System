@@ -1,6 +1,7 @@
 fastapi
 numpy
 pandas
+pytest
 torch
 scikit-learn
 uvicorn
