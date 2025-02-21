@@ -1,5 +1,7 @@
 import logging
 
+
+
 def Logger(name, storage, level = logging.INFO):
 
 	formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
@@ -13,3 +15,9 @@ def Logger(name, storage, level = logging.INFO):
 	logger.addHandler(handler)
 
 	return logger
+
+
+
+CoreLogger = Logger('core_logger', 'core.log')
+DataLogger = Logger('data_logger', 'data.log')
+ModelLogger = Logger('model_logger', 'model.log')

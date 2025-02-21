@@ -6,7 +6,7 @@ import pandas
 import numpy
 import torch
 
-logger = src.util.log.Logger('core_logger', 'core.log')
+logger = src.util.log.CoreLogger
 
 
 
