@@ -2,5 +2,11 @@
 __pycache__/
 *.py[cod]
 
+# Test files
+.pytest_cache/
+
+# Log files
+*.log
+
 # IDE files
 .vs/

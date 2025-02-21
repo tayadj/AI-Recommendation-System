@@ -1,4 +1,4 @@
-class CoreException(Exception):
+class ModelException(Exception):
 
     def __init__(self, message):
 

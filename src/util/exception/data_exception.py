@@ -1,4 +1,4 @@
-class CoreException(Exception):
+class DataException(Exception):
 
     def __init__(self, message):
 

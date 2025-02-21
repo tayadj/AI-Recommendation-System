@@ -1,5 +1,10 @@
+import src.core.config
+import src.util
+
 import pandas
 import re
+
+logger = src.util.log.CoreLogger
 
 
 
@@ -9,9 +14,16 @@ class DataValidationPipeline:
 
         self.version = config.get('version')
 
+        if self.version.lower() not in src.core.config.Config['available_model']:
+
+            logger.error(f"core.pipeline.DataValidationPipeline.__init__({config}): Wrong model - \"{self.version}\", expected - {src.core.config.Config['available_model']}.")
+            raise src.util.exception.CoreException(f"core.pipeline.DataValidationPipeline.__init__({config}): Wrong model - \"{self.version}\", expected - {src.core.config.Config['available_model']}.")
+
+        logger.info(f"core.pipeline.DataValidationPipeline.__init__({config}): data validation pipeline initialisation for model \"{self.version}\".")
+
     def validate(self, text):
 
-        match self.version:
+        match self.version.lower():
 
             case 'alpha':
 
@@ -30,14 +42,18 @@ class DataValidationPipeline:
                 text = text.lower()     
                 text = ' '.join([word for word in text.split() if word not in stops])
 
+        logger.debug(f"core.pipeline.DataValidationPipeline.validate({text}): data validation pipeline validation for model \"{self.version}\".")
+
         return text
 
     def process(self, data):
 
-        match self.version: 
+        match self.version.lower(): 
 
             case 'alpha':
 
                 data['text']['message'] = data['text']['message'].map(self.validate)
+
+        logger.info(f"core.pipeline.DataValidationPipeline.process({data}): data validation pipeline process for model \"{self.version}\".")
 
         return data

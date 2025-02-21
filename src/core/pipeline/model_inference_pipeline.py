@@ -1,16 +1,24 @@
 import src.core
 import src.model
+import src.util
 
 import pandas
 import numpy
 import torch
 import re
 
+logger = src.util.log.CoreLogger
+
 
 
 class ModelInferencePipeline:
 
 	def __init__(self, version):
+
+		if version.lower() not in src.core.config.Config['available_model']:
+
+			logger.error(f"core.pipeline.ModelInferencePipeline.__init__({version}): Wrong model - \"{version}\", expected - {src.core.config.Config['available_model']}.")
+			raise src.util.exception.CoreException(f"core.pipeline.ModelInferencePipeline.__init__({version}): Wrong model - \"{version}\", expected - {src.core.config.Config['available_model']}.")
 
 		self.data = src.model.load(version)
 
@@ -19,9 +27,11 @@ class ModelInferencePipeline:
 		self.model.load_state_dict(self.data['model'])
 		self.model.eval()
 
+		logger.info(f"core.pipeline.ModelInferencePipeline.__init__({version}): model inference pipeline initialisation for model \"{version}\".")
+
 	def process(self, sample):
 
-		match self.data['config'].get('version'):
+		match self.data['config'].get('version').lower():
 
 			case 'alpha':
 
@@ -59,4 +69,8 @@ class ModelInferencePipeline:
 
 					input.append(message_tensor)
 
-				return self.model.predict(torch.stack(input, dim = 0))
+				prediction = self.model.predict(torch.stack(input, dim = 0))
+
+		logger.info(f"core.pipeline.ModelInferencePipeline.process({sample}): model inference pipeline process for model \"{self.data['config'].get('version').lower()}\", return - {prediction}.")
+
+		return prediction

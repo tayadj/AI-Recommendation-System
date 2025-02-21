@@ -1,8 +1,11 @@
 import src.data
+import src.util
 
 import pandas
 import sys
 import os
+
+logger = src.util.log.CoreLogger
 
 
 
@@ -12,11 +15,13 @@ class DataIngestionPipeline:
 
 		self.version = version
 
+		logger.info(f"core.pipeline.DataIngestionPipeline.__init__({version}): data ingestion pipeline initialisation.")
+
 	def process(self, data, config = {}):
 
 		mode = config.get('mode', 'new')
 
-		match mode:
+		match mode.lower():
 
 			case 'new':
 
@@ -37,3 +42,5 @@ class DataIngestionPipeline:
 					concatenated[key] = pandas.concat([value, data[key]], ignore_index = True)
 
 				src.data.save(concatenated, config)
+
+		logger.info(f"core.pipeline.DataIngestionPipeline.process({data}, {config}): data ingestion pipeline process in mode \"{mode}\".")
