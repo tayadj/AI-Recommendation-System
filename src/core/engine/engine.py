@@ -54,25 +54,35 @@ class Engine():
 			self.dense = torch.nn.Linear(self.dimension_hidden * 2 if self.bidirectional else self.dimension_hidden, self.dimension_output)
 			self.Tanh = torch.nn.Tanh()
 
-		def forward(self, x):
+			logger.info(f"core.Engine.ModelAlpha.__init__(): model alpha initialisation - {self}.")
 
-			embedded = self.embedding(x)
+		def forward(self, input):
+
+			embedded = self.embedding(input)
 			LSTM_output, (hidden, cell) = self.LSTM(embedded)
 			hidden = torch.cat((hidden[-2,:,:], hidden[-1,:,:]), dim = 1) if self.bidirectional else hidden[-1,:,:]
-			output = self.dense(hidden)
-			return self.Tanh(output)
+			raw_output = self.dense(hidden)
+			output = self.Tanh(raw_output)
 
-		def predict(self, x):
+			logger.info(f"core.Engine.ModelAlpha.forward({input}): model alpha forward propagation, return - {output}.")
+
+			return output
+
+		def predict(self, input):
 
 			with torch.no_grad():
 
 				self.eval()
-				prediction = self.forward(x)
-				self.train()
+				prediction = self.forward(input)
 
-				return prediction
+			logger.info(f"core.Engine.ModelAlpha.predict({input}): model alpha prediction, return - {prediction}.")
 
+			return prediction
 
+	
+	def __init__(self):
+
+		logger.info(f"core.Engine.__init__(): model engine initialisation.")
 
 	def produce(self, mode, config = {}):
 
@@ -95,5 +105,5 @@ class Engine():
 
 			case _:
 
-				logger.error(f"Wrong engine mode: \"" + mode + "\". Expected: { alpha }")
-				raise src.util.exception.CoreException("Wrong engine mode: \"" + mode + "\". Expected: { alpha }")			
+				logger.error(f"core.Engine.produce(): Wrong engine mode: \"{mode}\". Expected: {{ alpha }}.")
+				raise src.util.exception.CoreException(f"core.Engine.produce(): Wrong engine mode: \"{mode}\". Expected: {{ alpha }}.")			
