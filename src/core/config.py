@@ -1,1 +1,5 @@
-Config = {}
+Config = {
+	"available_model": [
+		"alpha"
+	]
+}
