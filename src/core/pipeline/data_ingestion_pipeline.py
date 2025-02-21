@@ -1,4 +1,4 @@
-import src
+import src.data
 
 import pandas
 import sys
