@@ -2,5 +2,8 @@
 __pycache__/
 *.py[cod]
 
+# Log files
+*.log
+
 # IDE files
 .vs/
