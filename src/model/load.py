@@ -15,9 +15,9 @@ def load(version):
         Returns:
             - dict: The model, environment and config loaded from the specified version.
     """
-
-	path = os.path.dirname(__file__) + '\\storage\\' + version
-
-	data = torch.load(path, weights_only = False)
-
-	return data
+    
+    path = os.path.dirname(__file__) + '\\storage\\' + version
+    
+    data = torch.load(path, weights_only = False)
+    
+    return data
