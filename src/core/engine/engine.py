@@ -4,7 +4,7 @@ import src.util
 import torch
 import logging
 
-logger = src.util.log.Logger('core_logger', 'core.log')
+logger = src.util.log.CoreLogger
 
 
 

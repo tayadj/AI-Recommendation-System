@@ -7,7 +7,7 @@ import numpy
 import torch
 import re
 
-logger = src.util.log.Logger('core_logger', 'core.log')
+logger = src.util.log.CoreLogger
 
 
 
