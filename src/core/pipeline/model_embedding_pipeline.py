@@ -51,12 +51,12 @@ class ModelEmbeddingPipeline:
 	def __init__(self, config = {}):
 
 		self.version = config.get('version')
-		self.batch_size = config.get('batch_size', 32)
 
 		match self.version:
 
 			case 'alpha':
 
+				self.batch_size = config.get('batch_size', 32)
 				self.message_length = config.get('message_length', 128)
 
 	def process(self, data):
