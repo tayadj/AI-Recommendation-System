@@ -1,4 +1,8 @@
+import src.util
+
 import torch
+
+logger = src.util.log.Logger('core_logger', 'core.log')
 
 
 
@@ -88,3 +92,8 @@ class Engine():
 			case 'alpha':
 
 				return self.ModelAlpha(config)
+
+			case _:
+
+				logger.error(f"Wrong engine mode: \"" + mode + "\". Expected: { alpha }")
+				raise src.util.exception.CoreException("Wrong engine mode: \"" + mode + "\". Expected: { alpha }")			

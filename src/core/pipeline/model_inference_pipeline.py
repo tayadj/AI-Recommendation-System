@@ -1,4 +1,5 @@
-import src
+import src.core
+import src.model
 
 import pandas
 import numpy
