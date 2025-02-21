@@ -1,6 +1,8 @@
+import src.core.config
 import src.util
 
 import torch
+import logging
 
 logger = src.util.log.Logger('core_logger', 'core.log')
 
@@ -54,7 +56,7 @@ class Engine():
 			self.dense = torch.nn.Linear(self.dimension_hidden * 2 if self.bidirectional else self.dimension_hidden, self.dimension_output)
 			self.Tanh = torch.nn.Tanh()
 
-			logger.info(f"core.Engine.ModelAlpha.__init__(): model alpha initialisation - {self}.")
+			logger.info(f"core.engine.Engine.ModelAlpha.__init__(): model alpha initialisation - {self}.")
 
 		def forward(self, input):
 
@@ -64,7 +66,7 @@ class Engine():
 			raw_output = self.dense(hidden)
 			output = self.Tanh(raw_output)
 
-			logger.info(f"core.Engine.ModelAlpha.forward({input}): model alpha forward propagation, return - {output}.")
+			logger.debug(f"core.engine.Engine.ModelAlpha.forward({input}): model alpha forward propagation, return - {output}.")
 
 			return output
 
@@ -75,14 +77,14 @@ class Engine():
 				self.eval()
 				prediction = self.forward(input)
 
-			logger.info(f"core.Engine.ModelAlpha.predict({input}): model alpha prediction, return - {prediction}.")
+			logger.debug(f"core.engine.Engine.ModelAlpha.predict({input}): model alpha prediction, return - {prediction}.")
 
 			return prediction
 
 	
 	def __init__(self):
 
-		logger.info(f"core.Engine.__init__(): model engine initialisation.")
+		logger.info(f"core.engine.Engine.__init__(): model engine initialisation.")
 
 	def produce(self, mode, config = {}):
 
@@ -105,5 +107,5 @@ class Engine():
 
 			case _:
 
-				logger.error(f"core.Engine.produce(): Wrong engine mode: \"{mode}\". Expected: {{ alpha }}.")
-				raise src.util.exception.CoreException(f"core.Engine.produce(): Wrong engine mode: \"{mode}\". Expected: {{ alpha }}.")			
+				logger.error(f"core.engine.Engine.produce(): Wrong engine mode - \"{mode}\", expected - {src.core.config.Config['available_model']}.")
+				raise src.util.exception.CoreException(f"core.engine.Engine.produce(): Wrong engine mode - \"{mode}\", expected - {src.core.config.Config['available_model']}..")			
