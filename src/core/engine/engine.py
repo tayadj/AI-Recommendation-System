@@ -80,7 +80,6 @@ class Engine():
 			logger.debug(f"core.engine.Engine.ModelAlpha.predict({input}): model alpha prediction, return - {prediction}.")
 
 			return prediction
-
 	
 	def __init__(self):
 

@@ -235,6 +235,62 @@ def build(request: BuildRequest):
 
         raise HTTPException(status_code = 500, detail = str(exception))
 
+
+class TuneRequest(BaseModel):
+
+    model: str
+    data: str
+
+@application.post("/tune")
+def tune(request: TuneRequest):
+
+    """
+    Endpoint: 
+
+        POST /tune
+
+    Request:
+
+        Headers:
+            Content-Type: application/json
+
+        Body Parameters:
+            model (string): Version of the model to be tuned.
+            data (string): Version of the data to be used.
+
+        Request Body:
+        {
+            "model": "sequential",
+            "data": "base"
+        }
+
+    Response:
+    
+        Status Code: 200 OK
+        Response Body:
+        {
+            "status": "OK"
+        }
+
+        Status Code: 500 Internal Server error
+        Response Body:
+        {
+            "detail": "Error message"
+        }
+    """
+
+    try:
+
+        model = request.model
+        data = request.data
+        src.util.script.TuneScript(model, data)
+
+        return { "status": "OK" }
+
+    except Exception as exception:
+
+        raise HTTPException(status_code = 500, detail = str(exception))
+
     
 
 @application.get("/health")

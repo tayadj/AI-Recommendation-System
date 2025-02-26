@@ -6,7 +6,7 @@ def BuildScript(model_version, data_version):
 
         case 'alpha':
 
-            data = src.data.load('alpha')
+            data = src.data.load(data_version)
 
             data_validation_pipeline = src.core.pipeline.DataValidationPipeline({'version': 'alpha'})
             data_clean = data_validation_pipeline.process(data['data'])
